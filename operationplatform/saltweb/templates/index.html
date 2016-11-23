@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block basebody %}
+<ul class="layui-nav">
+  <li class="layui-nav-item layui-this"><a href="/index/">salt管理</a></li>
+  <li class="layui-nav-item "><a href="/cmdhistorylist/">salt命令历史</a></li>
+  <li class="layui-nav-item">
+    <a href="javascript:;">salt配置管理</a>
+    <dl class="layui-nav-child"> <!-- 二级菜单 -->
+      <dd><a href="">组管理</a></dd>
+      <dd><a href="">模块管理</a></dd>
+    </dl>
+  </li>
+  <li class="layui-nav-item"><a href="/saltbbs/">salt文档交流</a></li>
+  <li class="layui-nav-item"><a href="">关于</a></li>
+  <i id='getname' style='position: fixed;top: 25px;font-size:18px;right:8%;color:white;cursor:pointer;' class="fa fa-user" aria-hidden="true"></i>
+  <a href="/logout/"><i class="fa fa-power-off" aria-hidden="true" style='color:white;position:fixed;right:4%;font-size:18px;top:25px;'></i></a>
+</ul>
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                    <div>
+                            {% csrf_token %}
+                            <label for="minion">请输入minions：<input id='minion' style='width:102px' type="text" name="minion"/></label>
+                            <label for="miniontype">请选择minions的类型:
+                                <select name="miniontype" id='miniontype'>
+                                    <option value="nodegroup">nodegroup</option>
+                                    <option value="pcre">pcre</option>
+                                    <option value="list">list</option>
+                                    <option value="grain">grain</option>
+                                    <option value="grain_pcre">grain_pcre</option>
+                                    <option value="glob">glob</option>
+                                    <option value="range">range</option>
+                                    <option value="compound">compound</option>
+                                </select>
+                            </label>
+                            <label for="minion">请输入要执行的module：<input type="text" id='module' name="module"/></label>
+                            <label for="minion">请输入要执行的module的参数：<input  id='arg' type="text" name="arg"/></label>
+                            <label for="minionsubmit"><input id='minionsubmit' name='minionsubmit' type="button" value="Submit" /></label>
+                            </div>
+                        <h5>任务 <small>执行结果</small></h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="table_data_tables.html#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a href="table_data_tables.html#">选项1</a>
+                                </li>
+                                <li><a href="table_data_tables.html#">选项2</a>
+                                </li>
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+
+                        <table class="table table-striped table-bordered table-hover dataTables-example" id='resulttable'>
+                            <thead>
+                                <tr>
+                                    <th>minions</th>
+                                    <th>result</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>end</th>
+                                    <th>end</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+                </div>
+     
+
+    <!-- 全局js -->
+    <script src="/static/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/static/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/static/layer/layer.js"></script>
+    <script src="/static/js/layui.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <!-- Data Tables -->
+    <script src="/static/js/plugins/dataTables/jquery.dataTables.js"></script>
+    <script src="/static/js/plugins/dataTables/dataTables.bootstrap.js"></script>
+    <!-- Page-Level Scripts -->
+    <script>
+        $(document).ready(function () {
+             var csrftoken = $.cookie('csrftoken');
+             function csrfSafeMethod(method) {
+             // these HTTP methods do not require CSRF protection
+             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+             }
+             $.ajaxSetup({
+             beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                   }
+               }
+            });
+            $('.dataTables-example').dataTable();
+            $('#getname').on('click', function(){
+                 $.ajax({
+                  url:'/getusername/',
+                  type:'get',
+                  success:function(data){
+                  layer.tips(data, '#getname',{tips:3});
+                   }
+                   });
+             });
+            $('#minionsubmit').on('click', function(){
+                console.log('yes')
+                var minion=$('#minion').val();
+                var miniontype=$('#miniontype').val();
+                var module=$('#module').val();
+                var arg=$('#arg').val();
+                var index = layer.load(3);
+                 $.ajax({
+                  url:'/saltcontrol/',
+                  data:{'minion':minion,'miniontype':miniontype,'module':module,'arg':arg},
+                  type:'POST',
+                  success:function(callback){
+                  layer.close(index); 
+                  obj=jQuery.parseJSON(callback);
+                  $("#resulttable tbody").html("");
+                  $.each(obj, function (k, v) {
+                      resultdata='<tr class="gradeX"> <td class="center">'+k+'</td>'+'<td class="center">'+v+'</td>'+'</tr>'
+                    $("#resulttable tbody").append(resultdata);
+                    });
+                   }
+                   });
+             });
+            layui.use('element', function(){
+            var element = layui.element();
+            element.on('tab(demo)', function(data){
+            console.log(data);
+                     });
+                });
+        });
+    </script>
+
+    {% endblock %} 

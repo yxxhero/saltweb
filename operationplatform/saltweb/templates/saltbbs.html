@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+{% block basebody %}
+<ul class="layui-nav">
+  <li class="layui-nav-item"><a href="/index/">salt管理</a></li>
+  <li class="layui-nav-item "><a href="/cmdhistorylist/">salt命令历史</a></li>
+  <li class="layui-nav-item">
+    <a href="javascript:;">salt配置管理</a>
+    <dl class="layui-nav-child"> <!-- 二级菜单 -->
+      <dd><a href="">组管理</a></dd>
+      <dd><a href="">模块管理</a></dd>
+    </dl>
+  </li>
+  <li class="layui-nav-item layui-this"><a href="/saltbbs/">salt文档交流</a></li>
+  <li class="layui-nav-item"><a href="">关于</a></li>
+  <i id='getname' style='position: fixed;top: 25px;font-size:18px;right:8%;color:white;cursor:pointer;' class="fa fa-user" aria-hidden="true"></i>
+  <a href="/logout/"><i class="fa fa-power-off" aria-hidden="true" style='color:white;position:fixed;right:4%;font-size:18px;top:25px;'></i></a>
+</ul>
+    <div class="wrapper wrapper-content animated fadeInRight">
+         {% csrf_token %}        
+         <blockquote class="layui-elem-quote">专注于文档分享和交流</blockquote>
+
+    </div>
+<div class="main layui-clear">
+  <div class="wrap">
+    <div class="content">
+      <div class="fly-tab">
+        <span>
+          <a href="jie/index.html">全部</a>
+          <a href="jie/index.html">精帖</a>
+        </span>
+        <form action="http://cn.bing.com/search" class="fly-search">
+          <i class="iconfont icon-sousuo"></i>
+          <input class="layui-input" autocomplete="off" placeholder="搜索内容，回车跳转" type="text" name="q">
+        </form>
+        <a href="jie/add.html" class="layui-btn jie-add">发布问题</a>
+      </div>
+      
+      
+      <ul class="fly-list">
+       {% for item in articlelist %}
+        <li class="fly-list-li">
+          <a href="{{ item.user_home }}" class="fly-list-avatar">
+            <img src="{{ item.head_sculpture }}" alt="">
+          </a>
+          <h2 class="fly-tip">
+            <a href="{{ item.title_link }}">{{ item.title }}</a>
+            {% if item.is_stick %}
+            <span class="fly-tip-stick">置顶</span>
+            {% endif %}
+            {% if item.is_fine %}
+            <span class="fly-tip-jing">精帖</span>
+            {% endif %}
+
+          </h2>
+          <p>
+            <span><a href="{{ item.user_home }}">{{ item.author.username }}</a></span>
+            <span>{{ item.createtime }}</span>
+            <span>{{ item.classify }}</span>
+            <span class="fly-list-hint"> 
+              <i class="iconfont" title="回答" style="cursor:pointer" onclick='commenttext({{ item.id }})'>&#xe60c; <h>{{ item.answer }}</h></i>
+              <i class="iconfont" title="点赞" style="cursor:pointer" onclick='addviews({{ item.id }},this)'>&#xe60b; <h>{{ item.views }}</h></i>
+            </span>
+          </p>
+        <li id="{{ item.id }}" class="hide" style="position:relative;margin-left: 8%;margin-bottom: -26px;">
+        <div style='height:100px;overflow-y:auto;'>
+        <ul style='list-style-type:none'>
+        </ul>
+        </div>
+        <textarea class='textarea-commment' placeholder="留下您的足迹..."></textarea>
+        <button style='height: 100%;margin-bottom: 28px;' class="layui-btn layui-btn-normal" onclick="addcomment({{ item.id }},this)">提交</button>
+        </li>
+        </li>
+        {% endfor %}
+      </ul>
+      
+      <div style="text-align: center">
+        <div class="laypage-main">
+          <a href="jie/index.html" class="laypage-next">更多求解</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <div class="edge">
+    
+  
+    <h3 class="page-title">技术交流聊天室</h3>
+    <div class="user-looklog leifeng-rank" style='overflow-y:auto;'>
+    <ul style='list-style-type:none' id="chathome">
+    </ul >
+    </div>
+    <div>
+    <textarea  placeholder="吐槽一下..." style='width:110%;'></textarea>
+    <button style="height: 100%;margin-bottom: 10px;margin-left: 90%;" class="layui-btn  layui-btn-normal" onclick="chatcommit(this)">提交</button>
+    </div>
+    <h3 class="page-title">最近热帖</h3>
+    <ol class="fly-list-one">
+      <li>
+        <a href="jie/detail.html">Layui 官网 在线演示页面 全面增加 查看代码 功能</a>
+        <span><i class="iconfont">&#xe60b;</i> 6087</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">Java实现LayIM后端的核心代码</a>
+        <span><i class="iconfont">&#xe60b;</i> 767</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">Layui 官网 在线演示页面 全面增加 查看代码 功能</a>
+        <span><i class="iconfont">&#xe60b;</i> 767</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">Layui 官网 在线演示页面 全面增加 查看代码 功能</a>
+        <span><i class="iconfont">&#xe60b;</i> 767</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">Layui 官网 在线演示页面 全面增加 查看代码 功能</a>
+        <span><i class="iconfont">&#xe60b;</i> 767</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">Layui 官网 在线演示页面 全面增加 查看代码 功能</a>
+        <span><i class="iconfont">&#xe60b;</i> 767</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">Layui 官网 在线演示页面 全面增加 查看代码 功能</a>
+        <span><i class="iconfont">&#xe60b;</i> 767</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">Layui 官网 在线演示页面 全面增加 查看代码 功能</a>
+        <span><i class="iconfont">&#xe60b;</i> 767</span>
+      </li>
+    </ol>
+    
+    <h3 class="page-title">近期热议</h3>
+    <ol class="fly-list-one">
+      <li>
+        <a href="jie/detail.html">盛赞！大赞狂赞！Layui完美兼容Vue.js</a>
+        <span><i class="iconfont">&#xe60c;</i> 96</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">盛赞！大赞狂赞！Layui完美兼容Vue.js</a>
+        <span><i class="iconfont">&#xe60c;</i> 96</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">盛赞！大赞狂赞！Layui完美兼容Vue.js</a>
+        <span><i class="iconfont">&#xe60c;</i> 96</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">盛赞！大赞狂赞！Layui完美兼容Vue.js</a>
+        <span><i class="iconfont">&#xe60c;</i> 96</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">盛赞！大赞狂赞！Layui完美兼容Vue.js</a>
+        <span><i class="iconfont">&#xe60c;</i> 96</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">盛赞！大赞狂赞！Layui完美兼容Vue.js</a>
+        <span><i class="iconfont">&#xe60c;</i> 96</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">Java实现LayIM后端的核心代码</a>
+        <span><i class="iconfont">&#xe60c;</i> 96</span>
+      </li>
+      <li>
+        <a href="jie/detail.html">Java实现LayIM后端的核心代码</a>
+        <span><i class="iconfont">&#xe60c;</i> 96</span>
+      </li>
+    </ol>
+    
+    <div class="fly-link">
+      <span>友情链接：</span>
+      <a href="http://www.layui.com/" target="_blank">Layui</a>
+      <a href="http://layim.layui.com/" target="_blank">LayIM</a>
+      <a href="http://layer.layui.com/" target="_blank">layer</a>
+    </div>
+    
+
+  </div>
+</div>
+     
+
+    <!-- 全局js -->
+    <script src="/static/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/static/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/static/layer/layer.js"></script>
+    <script src="/static/js/layui.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <!-- Data Tables -->
+    <script src="/static/js/plugins/dataTables/jquery.dataTables.js"></script>
+    <script src="/static/js/plugins/dataTables/dataTables.bootstrap.js"></script>
+    <!-- Page-Level Scripts -->
+    <script>
+            window.chatid=0
+            function checkchat(){
+            $.ajax({
+                  url:'/checkchat/',
+                  type:'post',
+                  data:{"id":window.chatid},
+                  success:function(chatdata){
+                  var  temp=jQuery.parseJSON(chatdata);
+                 window.chatid=temp.id
+                 var chatinfolist=temp.chatinfo
+                  for(var item in chatinfolist){
+                  chathtml="<li>"+chatinfolist[item].username__username+":"+chatinfolist[item].chatcontent+"   at  "+chatinfolist[item].createtime+"</li>";
+                    $('#chathome').append(chathtml);  
+                       }
+                    $('#chathome').parent().scrollTop($('#chathome').parent()[0].scrollHeight);
+
+                   }
+                   });
+             }
+            function commenttext(id){
+                 var ele="#"+id;
+                $(ele).children('div').children().empty();
+                 $.ajax({
+                  url:'/showcomments/',
+                  type:'post',
+                  data:{'id':id},
+                  success:function(commentdata){
+                  var  temp=jQuery.parseJSON(commentdata);
+                  for(var item in temp){
+                    commenthtml="<li>"+temp[item].username__username+":"+temp[item].content+"        at  "+temp[item].createtime+"</li>";
+                    $(ele).children('div').children().append(commenthtml);  
+                       }
+                    $(ele).children('div').scrollTop($(ele).children('div')[0].scrollHeight);
+                   }
+                   });
+            $(ele).toggleClass('hide');
+            }
+            function addviews(id,ele){
+                 $.ajax({
+                  url:'/addviews/',
+                  type:'post',
+                  data:{'id':id},
+                  success:function(num){
+                   $(ele).children().text(num);  
+                   }
+                   });
+            }
+            function chatcommit(ele){
+                var msg=$(ele).siblings('textarea').val();
+                 $.ajax({
+                  url:'/chathome/',
+                  type:'post',
+                  data:{'message':msg},
+                  success:function(chatinfo){
+                  $(ele).siblings().val("");
+                  var  temp=jQuery.parseJSON(arg);
+                   window.chatid=temp.id;
+                   chathtml="<li>"+temp.username+":"+meg+"   at  "+temp.chattime+"</li>";
+                   $('#chathome').append(chathtml); 
+                   $('#chathome').parent().scrollTop($('#chathome').parent()[0].scrollHeight); 
+                   }
+                   });
+            }
+            function addcomment(id,ele){
+                var content=$(ele).siblings('textarea').val();
+                console.log(content)
+                 $.ajax({
+                  url:'/addcomment/',
+                  type:'post',
+                  data:{'id':id,'content':content},
+                  success:function(arg){
+                  $(ele).siblings('textarea').val("")
+                  var  temp=jQuery.parseJSON(arg);
+                  commenthtml="<li>"+temp.username+":"+content+"     at   "+temp.datetime+"</li>";
+                  $(ele).siblings('div').children().append(commenthtml);
+                  console.log($(ele).siblings('div').scrollTop());
+                  $(ele).siblings('div').scrollTop($(ele).siblings('div')[0].scrollHeight);
+                   }
+                   });
+            }
+
+        $(document).ready(function () {
+             var csrftoken = $.cookie('csrftoken');
+             function csrfSafeMethod(method) {
+             // these HTTP methods do not require CSRF protection
+             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+             }
+             $.ajaxSetup({
+             beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                   }
+               }
+            });
+            $('.dataTables-example').dataTable();
+            setInterval("checkchat()",1000);
+            $('#getname').on('click', function(){
+                 $.ajax({
+                  url:'/getusername/',
+                  type:'get',
+                  success:function(data){
+                  layer.tips(data, '#getname',{tips:3});
+                   }
+                   });
+             });
+            layui.use('element', function(){
+            var element = layui.element();
+            element.on('tab(demo)', function(data){
+            console.log(data);
+                     });
+                });
+        });
+    </script>
+
+    {% endblock %} 

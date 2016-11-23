@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block basebody %}
+<ul class="layui-nav">
+  <li class="layui-nav-item"><a href="/index/">salt管理</a></li>
+  <li class="layui-nav-item layui-this"><a href="/cmdhistorylist/">salt命令历史</a></li>
+  <li class="layui-nav-item">
+    <a href="javascript:;">salt配置管理</a>
+    <dl class="layui-nav-child"> <!-- 二级菜单 -->
+      <dd><a href="">组管理</a></dd>
+      <dd><a href="">模块管理</a></dd>
+    </dl>
+  </li>
+  <li class="layui-nav-item"><a href="/saltbbs/">salt文档交流</a></li>
+  <li class="layui-nav-item"><a href="">关于</a></li>
+  <i id='getname' style='position: fixed;top: 25px;font-size:18px;right:8%;color:white;cursor:pointer;' class="fa fa-user" aria-hidden="true"></i>
+  <a href="/logout/"><i class="fa fa-power-off" aria-hidden="true" style='color:white;position:fixed;right:4%;font-size:18px;top:25px;'></i></a>
+</ul>
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>salt <small>命令历史</small></h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="table_data_tables.html#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a href="#">选项1</a>
+                                </li>
+                                <li><a href="#">选项2</a>
+                                </li>
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+
+                        <table class="table table-striped table-bordered table-hover dataTables-example">
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>执行时间</th>
+                                    <th>用户名</th>
+                                    <th>minion</th>
+                                    <th>minion类型</th>
+                                    <th>模块</th>
+                                    <th>参数</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cmddicts %} 
+                                <tr class="gradeX">
+                                <td class="center">{{item.id}}</td>
+                                <td class="center">{{item.createtime | date:"Y-m-d H:i:s"}}</td>
+                                <td class="center">{{item.username}}</td>
+                                <td class="center">{{item.minions}}</td>
+                                <td class="center">{{item.miniontype}}</td>
+                                <td class="center">{{item.module}}</td>
+                                <td class="center">{{item.arg}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>end</th>
+                                    <th>end</th>
+                                    <th>end</th>
+                                    <th>end</th>
+                                    <th>end</th>
+                                    <th>end</th>
+                                    <th>end</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+                </div>
+     
+
+    <!-- 全局js -->
+    <script src="/static/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/static/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/static/layer/layer.js"></script>
+    <script src="/static/js/layui.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <!-- Data Tables -->
+    <script src="/static/js/plugins/dataTables/jquery.dataTables.js"></script>
+    <script src="/static/js/plugins/dataTables/dataTables.bootstrap.js"></script>
+    <!-- Page-Level Scripts -->
+    <script>
+        $(document).ready(function () {
+             var csrftoken = $.cookie('csrftoken');
+             function csrfSafeMethod(method) {
+             // these HTTP methods do not require CSRF protection
+             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+             }
+             $.ajaxSetup({
+             beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                   }
+               }
+            });
+            $('.dataTables-example').dataTable();
+            $('#getname').on('click', function(){
+                 $.ajax({
+                  url:'/getusername/',
+                  type:'get',
+                  success:function(data){
+                  layer.tips(data, '#getname',{tips:3});
+                   }
+                   });
+             });
+            layui.use('element', function(){
+            var element = layui.element();
+            element.on('tab(demo)', function(data){
+            console.log(data);
+                     });
+                });
+        });
+    </script>
+
+    {% endblock %} 
