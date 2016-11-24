@@ -16,7 +16,7 @@ body{line-height:24px;   -webkit-font-feature-settings: 'kern' 1; -moz-font-feat
 .textarea-commment{height: 35px;width: 89%;    border: #3F3F7F;border-style: dotted;border-width: thin;}
 body input, body textarea{box-shadow:none;}
 body .layui-layer-prompt textarea.layui-layer-input{resize: both;}
-
+.message-text {margin-top: 9px;padding: 6px;color: #000000;border-radius: 8px;display: inline-block;text-align: left;position: relative;background-color: #CCC5C5;margin-left: 14px;}
 /* 图标 */
 
 @font-face {font-family: "iconfont";

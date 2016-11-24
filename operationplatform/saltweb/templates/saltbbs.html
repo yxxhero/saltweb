@@ -200,10 +200,10 @@
                  window.chatid=temp.id
                  var chatinfolist=temp.chatinfo
                   for(var item in chatinfolist){
-                  chathtml="<li>"+chatinfolist[item].username__username+":"+chatinfolist[item].chatcontent+"   at  "+chatinfolist[item].createtime+"</li>";
+                  chathtml="<li><a style='color:blue;'>"+chatinfolist[item].username__username+"</a><span style='font-size:11px;'>   "+chatinfolist[item].createtime+"</span><br><div class='message-text'>"+chatinfolist[item].chatcontent+"</div></li>";
                     $('#chathome').append(chathtml);  
                        }
-                    $('#chathome').parent().scrollTop($('#chathome').parent()[0].scrollHeight);
+//                    $('#chathome').parent().scrollTop($('#chathome').parent()[0].scrollHeight);
 
                    }
                    });
@@ -244,9 +244,9 @@
                   data:{'message':msg},
                   success:function(chatinfo){
                   $(ele).siblings().val("");
-                  var  temp=jQuery.parseJSON(arg);
+                  var  temp=jQuery.parseJSON(chatinfo);
                    window.chatid=temp.id;
-                   chathtml="<li>"+temp.username+":"+meg+"   at  "+temp.chattime+"</li>";
+                   chathtml="<li>"+"<a style='color:blue;'>"+temp.username+"</a>"+":"+"<span style='font-size:11px;'>"+temp.chattime+"</span><br><div class='message-text'>"+msg+"</div></li>";
                    $('#chathome').append(chathtml); 
                    $('#chathome').parent().scrollTop($('#chathome').parent()[0].scrollHeight); 
                    }
